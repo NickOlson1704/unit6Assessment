@@ -12,6 +12,38 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '../public')))
 
+var Rollbar = require('rollbar')
+var rollbar = new Rollbar({
+  accessToken: '427bab4695284f24bd9c85cf751bea35',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
+
+rollbar.log('Hello world!')
+
+app.get('', (req, res) => {
+  rollbar.error('Uncaught Exception', error)
+  res.status(200).send(students)
+})
+
+app.get('', (req, res) => {
+  rollbar.error('Manual Error', error)
+  res.status(200).send(students)
+})
+
+app.get('', (req, res) => {
+  rollbar.error('Network Error', error);
+  res.status(200).send(students)
+})
+
+app.get('', (req, res) => {
+  const expectedValue = 5;
+  const actualValue = 10;
+  if (expectedValue !== actualValue) {
+    rollbar.error('Assertion Error', 'Expected: ' + expectedValue + ', Actual: ' + actualValue);
+  } 
+})
+
 // Add up the total health of all the robots
 const calculateTotalHealth = (robots) =>
   robots.reduce((total, { health }) => total + health, 0);
